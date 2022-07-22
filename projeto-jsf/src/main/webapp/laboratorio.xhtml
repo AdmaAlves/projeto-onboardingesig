@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="menu.xhtml">
+
+	<h:head>
+		<meta http-equiv="Content-Type"
+			content="text/html; charset=ISO-8859-1" />
+		<title>Cadastro de Laboratório</title>
+	</h:head>
+
+	<h:body>
+		<div align="center">
+			<p:panel header="CADASTRO DE LABORATÓRIOS">
+				<h:form id="form1">
+					<h:panelGrid columns="2">
+						<p:outputLabel for="nome" value="Nome :" />
+						<p:inputText value="#{labBean.laboratorio.nome}" id="nome"  required="true"/>
+
+						<p:outputLabel for="codigo" value="Código: " />
+						<p:inputText id="codigo" value="#{labBean.laboratorio.codigo}" required="true"/>
+
+					</h:panelGrid>
+
+					<br />
+
+					<h:outputText rendered="#{labBean.existe}" />
+
+					<h:panelGrid columns="3" rendered="#{labBean.existe}">
+
+						<p:outputLabel for="temFarmaceutico" value="Trocar farmacêutico: " />
+
+						<p:dataTable id="temFarmaceutico" value="#{labBean.farmaceuticosDisponiveis()}" var="fd">
+
+							<p:column headerText="Nome">
+								<h:outputText value="#{fd.nome}" />
+							</p:column>
+
+							<p:column headerText="CRF">
+								<h:outputText value="#{fd.crf}" />
+							</p:column>
+
+							<p:column headerText="Email">
+								<h:outputText value="#{fd.email}" />
+							</p:column>
+
+							<p:column headerText="Mudar">
+								<h:commandLink action="#{labBean.addFarmaceutico()}" value="Add">
+									<f:setPropertyActionListener value="#{fd}" target="#{labBean.farmaceutico}" />
+								</h:commandLink>
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+
+					<h:outputText rendered="#{!labBean.existe}" />
+
+					<p:commandButton value="Salvar" action="#{labBean.salvar()}" />
+					<p:commandButton value="Voltar" action="#{labBean.excluir()}" update="form1" />
+
+				</h:form>
+			</p:panel>
+			<br />
+			<p:panel header="LABORATÓRIOS CADASTRADOS">
+				<h:form>
+					<p:dataTable value="#{labBean.listaLaboratorios()}" var="l">
+						<p:column headerText="Nome">
+							<h:outputText value="#{l.nome}" />
+						</p:column>
+
+						<p:column headerText="Código">
+							<h:outputText value="#{l.codigo}" />
+						</p:column>
+
+						<p:column headerText="Ações">
+							<p:commandLink value="Editar" update="form1">
+								<f:setPropertyActionListener value="#{l}" target="#{labBean.laboratorio}" />
+							</p:commandLink>
+
+							<p:commandLink value="Excluir" action="#{labBean.excluir()}">
+								<f:setPropertyActionListener value="#{l}" target="#{labBean.laboratorio}" />
+							</p:commandLink>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:form>
+				
+			</p:panel>
+
+		</div>
+	</h:body>
+
+</ui:decorate>

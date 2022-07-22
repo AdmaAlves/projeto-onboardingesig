@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
+			 xmlns:h="http://java.sun.com/jsf/html"
+			 xmlns:f="http://java.sun.com/jsf/core"
+			 xmlns:p="http://primefaces.org/ui" 
+			 template="menu.xhtml">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<title>Cadastrar Medicamento</title>
+	</h:head>
+	<h:body>
+		<div align="center">
+
+			<p:panel header="CADASTRO DE MEDICAMENTOS">
+				<h:form id="form1">
+
+					<h:panelGrid columns="2">
+
+						<p:outputLabel for="nome" value="Nome: " />
+						<p:inputText id="nome" value="#{medBean.medicamento.nome}" required="true" />
+						
+						<p:outputLabel for="gtin" value="GTIN-13: " />
+						<p:inputMask mask="9999999999999" id="gtin" value="#{medBean.medicamento.gtin}" required="true" />
+						
+						<p:outputLabel for="descricao" value="Descrição: " />
+						<p:inputText id="descricao" value="#{medBean.medicamento.descricao}" required="true" />
+
+					</h:panelGrid>
+
+					<br />
+
+					<h:panelGrid columns="2" rendered="#{medBean.existe}">
+
+						<p:outputLabel value="Laboratório responsável: " />
+
+						<p:dataTable value="#{medBean.labReponsavelId()}" var="lr">
+							<p:column headerText="Nome">
+								<h:outputText value="#{lr.nome}" />
+							</p:column>
+
+							<p:column headerText="Código">
+								<h:outputText value="#{lr.codigo}" />
+							</p:column>
+
+							<p:column headerText="Remover">
+								<p:commandLink action="#{medBean.removerLaboratorioDoMedicamento()}" value="Remover">
+									<f:setPropertyActionListener value="#{lr}" target="#{medBean.laboratorio}" />
+								</p:commandLink>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:outputLabel value="Laboratórios disponiveis: " />
+						<p:dataTable value="#{medBean.labsDisponiveis()}" var="ld">
+							<p:column headerText="Nome">
+								<h:outputText value="#{ld.nome}" />
+							</p:column>
+
+							<p:column headerText="Código">
+								<h:outputText value="#{ld.codigo}" />
+							</p:column>
+
+							<p:column headerText="Cadastrar">
+								<p:commandLink action="#{medBean.cadastrarMedicamentoNoLaboratorio()}" value="Add">
+									<f:setPropertyActionListener value="#{ld}" target="#{medbean.laboratorio}" />
+								</p:commandLink>
+							</p:column>
+
+						</p:dataTable>
+						<br />
+
+					</h:panelGrid>
+
+					<h:outputText rendered="#{!medBean.existe}" />
+
+					<p:commandButton value="Salvar" action="#{medBeaan.salvar()}" update="form2" />
+					<p:commandButton value="Voltar" action="#{medBean.voltar()}" update="form1" />
+
+				</h:form>
+			</p:panel>
+			<br />
+			<p:panel header="MEDICAMENTOS CADASTRADOS">
+				<h:form id="form2">
+
+
+					<p:dataTable value="#{medBean.listaMedicamentos}" var="m">
+
+						<p:column headerText="Nome">
+							<h:outputText value="#{m.nome}" />
+						</p:column>
+
+						<p:column headerText="GTIN-13">
+							<h:outputText value="#{m.gtin}" />
+						</p:column>
+
+
+						<p:column headerText="laboratório(s) responsável(eis):">
+							<h:outputText value="#{m.labResponsavel.size()}" />
+						</p:column>
+
+						<p:column headerText="Ações">
+							<p:commandLink value="Editar" update="form1">
+								<f:setPropertyActionListener value="#{m}" target="#{medBean.medicamento}" />
+							</p:commandLink>
+					
+							<p:commandLink value="Excluir" action="#{medBean.excluir()}" update="form2">
+								<f:setPropertyActionListener value="#{m}" target="#{medBean.medicamento}" />
+							</p:commandLink>
+
+						</p:column>
+
+					</p:dataTable>
+
+				</h:form>
+			</p:panel>
+		</div>
+	</h:body>
+</ui:decorate>
